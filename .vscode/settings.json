@@ -1,0 +1,50 @@
+{
+    "github.copilot.chat.tools.enable": true,
+    "files.writeEnabled": true,
+    "chat.tools.terminal.autoApprove": {
+        "/^npm install -g @playwright/test$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^npx skills find playwright$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^npm init -y$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^npm install -D @playwright/test$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^playwright-cli open https://todomvc\\.com/examples/react/dist/$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^playwright-cli install-browser$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^playwright-cli video-start$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^playwright-cli snapshot$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^playwright-cli type \"\\.new-todo\" \"Learn Playwright CLI\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^playwright-cli type \"Buy groceries\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^git init$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
