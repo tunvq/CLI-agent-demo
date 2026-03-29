@@ -36,14 +36,14 @@ jobs:
       run: npx playwright install --with-deps
     
     - name: Run TodoMVC QA Tests
-      run: npx playwright test TodoMVC_Playwright_Automation.spec.js --reporter=html,json
+      run: npx playwright test qa-tests/todomvc-app/TodoMVC_Playwright_Automation.spec.js --reporter=html,json --outputdir=qa-tests/todomvc-app/test-results/
     
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: todomvc-playwright-report
-        path: playwright-report/
+        path: qa-tests/todomvc-app/test-results/
         retention-days: 30
     
     - name: Upload test report
@@ -51,7 +51,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: todomvc-html-report
-        path: playwright-report/
+        path: qa-tests/todomvc-app/test-results/
     
     - name: Comment PR with test results
       if: always() && github.event_name == 'pull_request'
