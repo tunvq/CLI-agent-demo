@@ -31,12 +31,8 @@ jobs:
     - name: Install dependencies
       run: npm install @playwright/test
     
-    - name: Install Playwright browsers
-      run: npx playwright install
-    
     - name: Run TodoMVC QA Tests
-      run: |
-        npx playwright test TodoMVC_Playwright_Automation.js --reporter=html,json,junit
+      run: npx playwright install && npx playwright test TodoMVC_Playwright_Automation.js --reporter=html,json
     
     - name: Upload test results
       if: always()
@@ -46,21 +42,12 @@ jobs:
         path: playwright-report/
         retention-days: 30
     
-    - name: Upload JUnit test results
+    - name: Upload test report
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: todomvc-junit-results
-        path: junit.xml
-    
-    - name: Publish test results
-      if: always()
-      uses: dorny/test-reporter@v1
-      with:
-        name: TodoMVC QA Test Results
-        path: junit.xml
-        reporter: 'java-junit'
-        fail-on-error: true
+        name: todomvc-html-report
+        path: playwright-report/
     
     - name: Comment PR with test results
       if: always() && github.event_name == 'pull_request'

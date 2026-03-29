@@ -25,11 +25,8 @@ jobs:
     - name: Install dependencies
       run: npm install @playwright/test
     
-    - name: Install Playwright
-      run: npx playwright install --with-deps
-    
     - name: Run TodoMVC Tests
-      run: npx playwright test TodoMVC_Playwright_Automation.js --reporter=html,json
+      run: npx playwright install && npx playwright test TodoMVC_Playwright_Automation.js --reporter=html,json
     
     - name: Archive TodoMVC test results
       if: always()
@@ -56,12 +53,10 @@ jobs:
     - name: Install dependencies
       run: npm install @playwright/test
     
-    - name: Install Playwright
-      run: npx playwright install --with-deps
-    
     - name: Run Heroku Tests
       run: |
         cd herokuapp
+        npx playwright install
         npx playwright test Heroku_Playwright_Automation.js --reporter=html,json
     
     - name: Archive Heroku test results

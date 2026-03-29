@@ -31,13 +31,11 @@ jobs:
     - name: Install dependencies
       run: npm install @playwright/test
     
-    - name: Install Playwright browsers
-      run: npx playwright install
-    
     - name: Run Heroku QA Tests
       run: |
         cd herokuapp
-        npx playwright test Heroku_Playwright_Automation.js --reporter=html,json,junit
+        npx playwright install
+        npx playwright test Heroku_Playwright_Automation.js --reporter=html,json
     
     - name: Upload test results
       if: always()
@@ -47,21 +45,12 @@ jobs:
         path: herokuapp/playwright-report/
         retention-days: 30
     
-    - name: Upload JUnit test results
+    - name: Upload test report
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: junit-results
-        path: herokuapp/junit.xml
-    
-    - name: Publish test results
-      if: always()
-      uses: dorny/test-reporter@v1
-      with:
-        name: Heroku QA Test Results
-        path: herokuapp/junit.xml
-        reporter: 'java-junit'
-        fail-on-error: true
+        name: heroku-html-report
+        path: herokuapp/playwright-report/
     
     - name: Comment PR with test results
       if: always() && github.event_name == 'pull_request'
