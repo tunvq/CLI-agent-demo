@@ -68,6 +68,153 @@ Explore just the "[FEATURE_NAME]" on "[URL]":
 
 ---
 
+## Folder Structure - Organization Best Practice
+
+Create a dedicated folder for each application/website you test. This keeps all related files organized together.
+
+### Recommended Structure
+
+```
+project-root/
+│
+├── qa-tests/                          # Main QA folder
+│   │
+│   ├── herokuapp-login-app/           # One folder PER application
+│   │   ├── Heroku_Playwright_Automation.spec.js
+│   │   ├── Heroku_Test_Plan.md
+│   │   ├── Heroku_SELECTORS.md        # ⭐ Selector verification map
+│   │   ├── Heroku_Test_Execution_Report.md
+│   │   ├── test-results/
+│   │   │   ├── playwright-report/
+│   │   │   └── results.json
+│   │   └── snapshots/                 # UI snapshots from exploration
+│   │       ├── login-initial.yml
+│   │       ├── login-success.yml
+│   │       └── login-error.yml
+│   │
+│   ├── todomvc-app/                   # Another application
+│   │   ├── TodoMVC_Playwright_Automation.spec.js
+│   │   ├── TodoMVC_Test_Plan.md
+│   │   ├── TodoMVC_SELECTORS.md
+│   │   ├── test-results/
+│   │   └── snapshots/
+│   │
+│   └── your-next-app/                 # Pattern for next applications
+│       ├── [app]_Playwright_Automation.spec.js
+│       ├── [app]_Test_Plan.md
+│       ├── [app]_SELECTORS.md
+│       ├── test-results/
+│       └── snapshots/
+```
+
+### What Goes in Each Folder
+
+| File/Folder | Purpose | When Created |
+|-------------|---------|--------------|
+| `[APP]_Playwright_Automation.spec.js` | Test cases | After Phase 2 (Test Plan) |
+| `[APP]_Test_Plan.md` | Test scenarios & documentation | After Phase 2 |
+| `[APP]_SELECTORS.md` | ⭐ Verified selectors map | After Phase 1.5 ✅ CRITICAL |
+| `test-results/` | JSON reports & HTML reports | After running tests locally |
+| `snapshots/` | UI snapshots from exploration | During Phase 1 exploration |
+| `QA_DELIVERABLES_INDEX.md` | Summary of all deliverables | Final documentation |
+
+### How to Create Structure in Your Project
+
+#### Option 1: Use Naming Convention (Simple)
+
+```bash
+# All in root, named by app:
+herokuapp/
+  ├── Heroku_Playwright_Automation.spec.js
+  ├── Heroku_Test_Plan.md
+  ├── Heroku_SELECTORS.md
+  └── test-results/
+
+todomvc/
+  ├── TodoMVC_Playwright_Automation.spec.js
+  ├── TodoMVC_Test_Plan.md
+  ├── TodoMVC_SELECTORS.md
+  └── test-results/
+```
+
+#### Option 2: Create Organized qa-tests/ Folder (Recommended)
+
+```bash
+# Create the folder structure:
+mkdir -p qa-tests/herokuapp-login-app/test-results
+mkdir -p qa-tests/herokuapp-login-app/snapshots
+mkdir -p qa-tests/todomvc-app/test-results
+mkdir -p qa-tests/todomvc-app/snapshots
+
+# Move files:
+mv herokuapp/* qa-tests/herokuapp-login-app/
+mv todomvc/* qa-tests/todomvc-app/
+```
+
+### GitHub Actions Configuration (Update paths)
+
+If using the organized structure, update your workflow files:
+
+```yaml
+# .github/workflows/qa-pipeline.yml
+
+- name: Run Herokuapp Tests
+  run: npx playwright test qa-tests/herokuapp-login-app/Heroku_Playwright_Automation.spec.js
+
+- name: Run TodoMVC Tests
+  run: npx playwright test qa-tests/todomvc-app/TodoMVC_Playwright_Automation.spec.js
+
+- name: Archive Results
+  uses: actions/upload-artifact@v4
+  with:
+    name: qa-results
+    path: qa-tests/*/test-results/
+```
+
+### Naming Convention Rules
+
+**For each application, use consistent naming:**
+
+```
+[APPLICATION_NAME]_Playwright_Automation.spec.js      # Test file
+[APPLICATION_NAME]_Test_Plan.md                       # Test plan
+[APPLICATION_NAME]_SELECTORS.md                       # Selector map ⭐
+[APPLICATION_NAME]_Test_Execution_Report.md           # Execution results
+```
+
+**Examples:**
+- ✅ `Heroku_Playwright_Automation.spec.js`
+- ✅ `TodoMVC_Playwright_Automation.spec.js`
+- ✅ `LinkedIn_Playwright_Automation.spec.js`
+
+---
+
+## Workflow with Organized Folders
+
+1. **Create folder for new app:**
+   ```bash
+   mkdir -p qa-tests/[app-name]/test-results
+   mkdir -p qa-tests/[app-name]/snapshots
+   ```
+
+2. **Explore and verify selectors:**
+   - Save selector map to: `qa-tests/[app-name]/[APP]_SELECTORS.md`
+
+3. **Generate tests:**
+   - Save test file to: `qa-tests/[app-name]/[APP]_Playwright_Automation.spec.js`
+   - Save test plan to: `qa-tests/[app-name]/[APP]_Test_Plan.md`
+
+4. **Run tests locally:**
+   ```bash
+   npx playwright test qa-tests/[app-name]/*.spec.js --reporter=html,json
+   ```
+
+5. **Results saved to:**
+   - `qa-tests/[app-name]/test-results/index.html`
+   - `qa-tests/[app-name]/test-results/results.json`
+
+---
+
 ## Complete Workflow
 
 ### Phase 1: Browser Exploration (20-30 minutes)
