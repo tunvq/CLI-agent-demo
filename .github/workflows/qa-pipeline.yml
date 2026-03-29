@@ -64,7 +64,7 @@ jobs:
       run: npx playwright install --with-deps
     
     - name: Run Heroku Tests
-      run: npx playwright test herokuapp/Heroku_Playwright_Automation.js --reporter=html,json
+      run: npx playwright test herokuapp/Heroku_Playwright_Automation.spec.js --reporter=html,json
     
     - name: Archive Heroku test results
       if: always()
