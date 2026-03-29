@@ -29,10 +29,10 @@ test.describe('Test Suite 1: Authentication - Valid Credentials', () => {
     await expect(page).toHaveTitle('The Internet');
     
     // Step 2: Enter valid username
-    await page.fill('[class*="username"] input', VALID_USERNAME);
+    await page.fill('#username', VALID_USERNAME);
     
     // Step 3: Enter valid password
-    await page.fill('[class*="password"] input', VALID_PASSWORD);
+    await page.fill('#password', VALID_PASSWORD);
     
     // Step 4: Click login button
     await page.click('button[type="submit"]');
@@ -65,10 +65,10 @@ test.describe('Test Suite 2: Authentication - Invalid Credentials', () => {
 
   test('TC 2.1: Login with Invalid Username and Password', async ({ page }) => {
     // Step 1: Enter invalid username
-    await page.fill('[class*="username"] input', 'invaliduser');
+    await page.fill('#username', 'invaliduser');
     
     // Step 2: Enter invalid password
-    await page.fill('[class*="password"] input', 'invalidpass');
+    await page.fill('#password', 'invalidpass');
     
     // Step 3: Click login button
     await page.click('button[type="submit"]');
@@ -82,8 +82,8 @@ test.describe('Test Suite 2: Authentication - Invalid Credentials', () => {
     await expect(page).toHaveURL(LOGIN_URL);
     
     // Step 6: Verify form is ready for retry
-    const usernameField = page.locator('[class*="username"] input');
-    const passwordField = page.locator('[class*="password"] input');
+    const usernameField = page.locator('#username');
+    const passwordField = page.locator('#password');
     await expect(usernameField).toBeVisible();
     await expect(passwordField).toBeVisible();
     
@@ -92,10 +92,10 @@ test.describe('Test Suite 2: Authentication - Invalid Credentials', () => {
 
   test('TC 2.2: Login with Correct Username, Wrong Password', async ({ page }) => {
     // Step 1: Enter valid username
-    await page.fill('[class*="username"] input', VALID_USERNAME);
+    await page.fill('#username', VALID_USERNAME);
     
     // Step 2: Enter invalid password
-    await page.fill('[class*="password"] input', 'wrongpassword123');
+    await page.fill('#password', 'wrongpassword123');
     
     // Step 3: Click login button
     await page.click('button[type="submit"]');
@@ -123,8 +123,8 @@ test.describe('Test Suite 3: Input Validation - Required Fields', () => {
 
   test('TC 3.1: Login with Empty Fields', async ({ page }) => {
     // Step 1: Verify fields are empty by default
-    const usernameField = page.locator('[class*="username"] input');
-    const passwordField = page.locator('[class*="password"] input');
+    const usernameField = page.locator('#username');
+    const passwordField = page.locator('#password');
     
     await expect(usernameField).toHaveValue('');
     await expect(passwordField).toHaveValue('');
@@ -142,10 +142,10 @@ test.describe('Test Suite 3: Input Validation - Required Fields', () => {
 
   test('TC 3.2: Login with Username Only (No Password)', async ({ page }) => {
     // Step 1: Enter username
-    await page.fill('[class*="username"] input', VALID_USERNAME);
+    await page.fill('#username', VALID_USERNAME);
     
     // Step 2: Leave password empty
-    const passwordField = page.locator('[class*="password"] input');
+    const passwordField = page.locator('#password');
     await expect(passwordField).toHaveValue('');
     
     // Step 3: Click login button
@@ -167,11 +167,11 @@ test.describe('Test Suite 3: Input Validation - Required Fields', () => {
 
   test('TC 3.3: Login with Password Only (No Username)', async ({ page }) => {
     // Step 1: Leave username empty
-    const usernameField = page.locator('[class*="username"] input');
+    const usernameField = page.locator('#username');
     await expect(usernameField).toHaveValue('');
     
     // Step 2: Enter password
-    await page.fill('[class*="password"] input', VALID_PASSWORD);
+    await page.fill('#password', VALID_PASSWORD);
     
     // Step 3: Click login button
     await page.click('button[type="submit"]');
@@ -201,8 +201,8 @@ test.describe('Test Suite 4: Session Management & Access Control', () => {
     await page.goto(LOGIN_URL);
     
     // Step 2: Login with valid credentials
-    await page.fill('[class*="username"] input', VALID_USERNAME);
-    await page.fill('[class*="password"] input', VALID_PASSWORD);
+    await page.fill('#username', VALID_USERNAME);
+    await page.fill('#password', VALID_PASSWORD);
     await page.click('button[type="submit"]');
     
     // Step 3: Verify redirect to secure area
@@ -240,7 +240,7 @@ test.describe('Test Suite 4: Session Management & Access Control', () => {
     await expect(page).toHaveURL(LOGIN_URL);
     
     // Step 4: Verify login form displayed
-    const usernameField = page.locator('[class*="username"] input');
+    const usernameField = page.locator('#username');
     const loginButton = page.locator('button[type="submit"]');
     await expect(usernameField).toBeVisible();
     await expect(loginButton).toBeVisible();
@@ -251,8 +251,8 @@ test.describe('Test Suite 4: Session Management & Access Control', () => {
   test('TC 4.3: Session Persistence - Page Reload While Logged In', async ({ page }) => {
     // Step 1: Navigate to login and authenticate
     await page.goto(LOGIN_URL);
-    await page.fill('[class*="username"] input', VALID_USERNAME);
-    await page.fill('[class*="password"] input', VALID_PASSWORD);
+    await page.fill('#username', VALID_USERNAME);
+    await page.fill('#password', VALID_PASSWORD);
     await page.click('button[type="submit"]');
     
     // Step 2: Wait for redirect to secure area
@@ -286,8 +286,8 @@ test.describe('Test Suite 5: Security & Input Handling', () => {
     // Step 1: Enter SQL injection payloads
     const sqlPayload = "' OR '1'='1";
     
-    await page.fill('[class*="username"] input', sqlPayload);
-    await page.fill('[class*="password"] input', sqlPayload);
+    await page.fill('#username', sqlPayload);
+    await page.fill('#password', sqlPayload);
     
     // Step 2: Click login button
     await page.click('button[type="submit"]');
@@ -297,7 +297,7 @@ test.describe('Test Suite 5: Security & Input Handling', () => {
     await expect(page).toHaveURL(LOGIN_URL);
     
     // Step 4: Verify page is still functional (no SQL errors)
-    const usernameField = page.locator('[class*="username"] input');
+    const usernameField = page.locator('#username');
     await expect(usernameField).toBeVisible();
     
     // Step 5: Verify error message (invalid credentials)
@@ -315,8 +315,8 @@ test.describe('Test Suite 5: Security & Input Handling', () => {
     // Step 1: Enter XSS payloads
     const xssPayload = '<script>alert("XSS")</script>';
     
-    await page.fill('[class*="username"] input', xssPayload);
-    await page.fill('[class*="password"] input', '<img src=x onerror="alert(1)">');
+    await page.fill('#username', xssPayload);
+    await page.fill('#password', '<img src=x onerror="alert(1)">');
     
     // Step 2: Click login button
     const loginButton = page.click('button[type="submit"]');
@@ -342,8 +342,8 @@ test.describe('Test Suite 5: Security & Input Handling', () => {
     const usernameWithSpaces = '  ' + VALID_USERNAME + '  ';
     const passwordWithSpaces = '  ' + VALID_PASSWORD + '  ';
     
-    await page.fill('[class*="username"] input', usernameWithSpaces);
-    await page.fill('[class*="password"] input', passwordWithSpaces);
+    await page.fill('#username', usernameWithSpaces);
+    await page.fill('#password', passwordWithSpaces);
     
     // Step 2: Click login button
     await page.click('button[type="submit"]');
@@ -385,8 +385,8 @@ test.describe('Test Suite 6: UI Elements & Form Structure', () => {
     await expect(page.locator('h2')).toContainText('Login Page');
     
     // Verify form elements
-    const usernameInput = page.locator('[class*="username"] input');
-    const passwordInput = page.locator('[class*="password"] input');
+    const usernameInput = page.locator('#username');
+    const passwordInput = page.locator('#password');
     const loginButton = page.locator('button[type="submit"]');
     const instructions = page.locator('h4');
     
@@ -401,8 +401,8 @@ test.describe('Test Suite 6: UI Elements & Form Structure', () => {
   test('TC 6.2: Verify Secure Area Elements', async ({ page }) => {
     // Login first
     await page.goto(LOGIN_URL);
-    await page.fill('[class*="username"] input', VALID_USERNAME);
-    await page.fill('[class*="password"] input', VALID_PASSWORD);
+    await page.fill('#username', VALID_USERNAME);
+    await page.fill('#password', VALID_PASSWORD);
     await page.click('button[type="submit"]');
     
     // Wait for secure area
@@ -432,8 +432,8 @@ test.describe('Test Suite 6: UI Elements & Form Structure', () => {
  */
 async function login(page, username, password) {
   await page.goto(LOGIN_URL);
-  await page.fill('[class*="username"] input', username);
-  await page.fill('[class*="password"] input', password);
+  await page.fill('#username', username);
+  await page.fill('#password', password);
   await page.click('button[type="submit"]');
   return page;
 }
