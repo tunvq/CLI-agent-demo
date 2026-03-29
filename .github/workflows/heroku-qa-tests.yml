@@ -28,20 +28,21 @@ jobs:
         node-version: '18'
     
     - name: Install dependencies
-      run: npm install @playwright/test
+      run: |
+        npm install @playwright/test
+        npx playwright install chromium --with-deps
     
     - name: Run Heroku QA Tests
-      run: |
-        cd herokuapp
-        npx playwright install
-        npx playwright test Heroku_Playwright_Automation.js --reporter=html,json
+      run: npx playwright test herokuapp/Heroku_Playwright_Automation.js --reporter=html,json
+      env:
+        CI: true
     
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: playwright-report
-        path: herokuapp/playwright-report/
+        path: playwright-report/
         retention-days: 30
     
     - name: Upload test report
@@ -49,7 +50,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: heroku-html-report
-        path: herokuapp/playwright-report/
+        path: playwright-report/
     
     - name: Comment PR with test results
       if: always() && github.event_name == 'pull_request'
