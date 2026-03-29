@@ -17,15 +17,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.58.2
     timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@v4
     
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
     - name: Install dependencies
       run: npm install
+    
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
     
     - name: Run TodoMVC QA Tests
       run: npx playwright test TodoMVC_Playwright_Automation.spec.js --reporter=html,json
