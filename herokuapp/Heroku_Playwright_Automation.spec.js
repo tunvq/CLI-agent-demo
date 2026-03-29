@@ -222,7 +222,7 @@ test.describe('Test Suite 4: Session Management & Access Control', () => {
     await expect(page).toHaveURL(LOGIN_URL);
     
     // Step 7: Verify login form is displayed
-    const usernameField = page.locator('[class*="username"] input');
+    const usernameField = page.locator('#username');
     await expect(usernameField).toBeVisible();
     
     console.log('✅ TC 4.1 PASSED: Logout properly terminates session');
@@ -453,7 +453,7 @@ async function logout(page) {
  */
 async function verifyOnLoginPage(page) {
   await expect(page).toHaveURL(LOGIN_URL);
-  await expect(page.locator('[class*="username"] input')).toBeVisible();
+  await expect(page.locator('#username')).toBeVisible();
   return true;
 }
 
