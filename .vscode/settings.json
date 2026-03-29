@@ -45,6 +45,16 @@
         "/^git init$/": {
             "approve": true,
             "matchCommandLine": true
-        }
+        },
+        "/^git add \\.github/workflows ; git commit -m \"fix: Update GitHub Actions to use latest versions \\(v4\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^git push origin main$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "git add": true,
+        "git commit": true
     }
 }
