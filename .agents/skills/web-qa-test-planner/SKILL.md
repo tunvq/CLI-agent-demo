@@ -12,9 +12,10 @@ A complete end-to-end skill for exploring web applications and generating profes
 
 This skill automates the entire QA workflow:
 1. **Explore Application** - Use Playwright CLI to interact with and document the web app
-2. **Document Findings** - Create comprehensive test plan from exploration
-3. **Generate Automation** - Provide ready-to-use Playwright test code
-4. **Package Deliverables** - Create professional QA documentation package
+2. **Verify Selectors** - ⭐ NEW: Test and validate all CSS selectors BEFORE generating tests
+3. **Document Findings** - Create comprehensive test plan from exploration
+4. **Generate Automation** - Provide ready-to-use Playwright test code (using verified selectors)
+5. **Package Deliverables** - Create professional QA documentation package
 
 ---
 
@@ -72,6 +73,113 @@ playwright-cli snapshot --filename=[app-name]-feature-state.yml
 
 playwright-cli close
 ```
+
+### Phase 1.5: Selector Verification & Validation ⭐ **NEW**
+
+**CRITICAL STEP - Do NOT skip!** This phase ensures all selectors work before generating tests.
+
+#### Step 1: Open Browser for Inspection
+
+```bash
+# Open browser with DevTools ready
+playwright-cli open [URL]
+```
+
+#### Step 2: For Each Key Element, Document the Selector
+
+**Method A: Using Browser DevTools**
+```
+1. Right-click the element on the page
+2. Select "Inspect" or "Inspect Element"
+3. Find the selector in DevTools:
+   - Look for: id="username"  → Use #username
+   - Look for: class="form-control login-field" → Use .login-field or .form-control
+   - Look for: data-testid="login-btn" → Use [data-testid="login-btn"]
+   - Last resort: type/placeholder → button[type="submit"]
+4. Copy the selector
+5. Test it in DevTools console: document.querySelector('#username')
+6. Result: Should return the element (not null)
+```
+
+**Method B: Using Playwright Evaluate**
+```javascript
+// In your exploration script, test each selector:
+await page.evaluate(() => {
+  const element = document.querySelector('#username');
+  console.log('Element found:', element !== null);
+  console.log('Is visible:', element?.offsetHeight > 0);
+  return element !== null;
+});
+```
+
+#### Step 3: Create Selector Map
+
+**File:** `[APP_NAME]_SELECTORS.md`
+
+```markdown
+# Selectors for [Application Name]
+
+| Element | Selector | Type | Status |
+|---------|----------|------|--------|
+| Username Input | #username | ID | ✅ VERIFIED |
+| Password Input | #password | ID | ✅ VERIFIED |
+| Login Button | button[type="submit"] | CSS | ✅ VERIFIED |
+| Error Message | .flash.error | Class | ✅ VERIFIED |
+| Logout Link | a:has-text("Logout") | Text | ✅ VERIFIED |
+
+**Verification Status:**
+- ✅ VERIFIED: Selector tested and works
+- ⚠️ CAUTION: Works but could be fragile
+- ❌ FAILED: Does not work, needs fix
+```
+
+#### Step 4: Test Selector Pass/Fail Scenarios
+
+For each selector, verify both pass AND fail cases:
+
+```javascript
+// Test 1: Selector finds element when it SHOULD exist
+await page.goto(LOGIN_PAGE);
+await expect(page.locator('#username')).toBeAttached(); // ✅ SHOULD PASS
+
+// Test 2: Selector does NOT find element when it SHOULDN'T exist
+await page.goto(SECURE_PAGE); // After logout, no login form
+await expect(page.locator('#username')).not.toBeAttached(); // ✅ SHOULD PASS
+```
+
+#### Step 5: Exit Criteria - MUST Complete Before Proceeding
+
+```
+✅ MUST VERIFY:
+  ☐ All login fields found and clickable
+  ☐ All buttons found and clickable
+  ☐ All error messages found
+  ☐ All navigation links found
+  ☐ All form inputs detected
+  
+❌ DO NOT PROCEED if:
+  ☐ Any selector returns null/not-found
+  ☐ Elements are hidden (offsetHeight = 0)
+  ☐ Element text is different than expected
+  ☐ Selector is too generic (matches unintended elements)
+  
+If ANY fail: Go back to Step 2, re-inspect, and fix selectors
+```
+
+#### Step 6: Close Browser
+
+```bash
+playwright-cli close
+```
+
+---
+
+**⚠️ IMPORTANT:** 
+- This phase PREVENTS generating tests with broken selectors
+- Time spent here SAVES 10x time fixing failing tests later
+- Never skip this step no matter how obvious the selectors seem
+
+---
 
 ### Phase 2: Test Plan Generation (30-45 minutes)
 
