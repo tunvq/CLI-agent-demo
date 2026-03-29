@@ -1,0 +1,115 @@
+name: QA - Interview Koffi Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'interviewKoffi/**'
+      - '.github/workflows/interview-koffi-qa-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'interviewKoffi/**'
+  workflow_dispatch:
+    inputs:
+      test_grep:
+        description: 'Filter tests by name (e.g. "TC-001" or "Smoke")'
+        required: false
+        default: ''
+
+jobs:
+  test:
+    name: Playwright – Interview Koffi QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers (Chromium only)
+        run: npx playwright install chromium --with-deps
+
+      - name: Run Interview Koffi QA Tests
+        run: |
+          GREP="${{ github.event.inputs.test_grep }}"
+          if [ -n "$GREP" ]; then
+            npx playwright test interviewKoffi/test-plan/InterviewKoffi_Playwright_Automation.spec.ts \
+              --grep "$GREP" \
+              --reporter=html,json \
+              --output=interviewKoffi/test-plan/test-results
+          else
+            npx playwright test interviewKoffi/test-plan/InterviewKoffi_Playwright_Automation.spec.ts \
+              --reporter=html,json \
+              --output=interviewKoffi/test-plan/test-results
+          fi
+        env:
+          CI: true
+
+      - name: Upload HTML Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: interview-koffi-playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload Test Results (JSON)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: interview-koffi-test-results-json
+          path: interviewKoffi/test-plan/test-results/
+          retention-days: 30
+
+      - name: Comment PR with test summary
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('child_process');
+
+            let passed = 0, failed = 0, skipped = 0;
+            try {
+              const json = require('./playwright-report/results.json');
+              passed  = json.stats?.expected  ?? 0;
+              failed  = json.stats?.unexpected ?? 0;
+              skipped = json.stats?.skipped    ?? 0;
+            } catch (e) {
+              console.log('Could not parse results.json:', e.message);
+            }
+
+            const total  = passed + failed + skipped;
+            const status = failed === 0 ? '✅ All tests passed' : `❌ ${failed} test(s) failed`;
+            const emoji  = failed === 0 ? '🟢' : '🔴';
+
+            const comment = `
+            ## ${emoji} QA – Interview Koffi Test Results
+
+            | Metric | Value |
+            |--------|-------|
+            | Total  | ${total} |
+            | Passed | ${passed} ✅ |
+            | Failed | ${failed} ❌ |
+            | Skipped | ${skipped} ⏭️ |
+
+            **Status:** ${status}
+
+            > 📥 Download the full HTML report from the **Actions → Artifacts** section.
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment.trim()
+            });

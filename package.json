@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "playwright test",
+    "test:koffi": "playwright test interviewKoffi/test-plan/InterviewKoffi_Playwright_Automation.spec.ts",
+    "test:koffi:smoke": "playwright test interviewKoffi/test-plan/InterviewKoffi_Playwright_Automation.spec.ts --grep 'TC-029'",
+    "test:report": "playwright show-report"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "@playwright/test": "^1.58.2"
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
   }
 }
