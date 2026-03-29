@@ -26,7 +26,7 @@ jobs:
       run: npm install @playwright/test
     
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install chromium
     
     - name: Run TodoMVC Tests
       run: npx playwright test TodoMVC_Playwright_Automation.spec.js --reporter=html,json
@@ -57,7 +57,7 @@ jobs:
       run: npm install @playwright/test
     
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install chromium
     
     - name: Run Heroku Tests
       run: npx playwright test herokuapp/Heroku_Playwright_Automation.js --reporter=html,json

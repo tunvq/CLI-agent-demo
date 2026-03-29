@@ -31,7 +31,7 @@ jobs:
       run: npm install @playwright/test
     
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install chromium
     
     - name: Run Heroku QA Tests
       run: npx playwright test herokuapp/Heroku_Playwright_Automation.js --reporter=html,json
