@@ -21,6 +21,13 @@ This skill automates the entire QA workflow:
 
 ## Quick Start
 
+**Want to use a template?** See `TEMPLATE.md` for reusable prompts you can copy/paste!
+
+```
+"Explore the [URL] and after finish exploring create testplan with verified selectors"
+```
+
+**Default usage:**
 ```
 "Create a test plan for [URL] - explore the app and generate test cases"
 ```
@@ -29,6 +36,35 @@ This skill automates the entire QA workflow:
 - **url**: The application URL to test (required)
 - **app-name**: Name of the application (optional)
 - **features**: Specific features to focus on (optional)
+
+---
+
+## Quick Templates (Copy & Paste)
+
+### Complete Workflow
+```
+Explore the "[URL]" website and:
+1. Document interactive elements and selectors
+2. RIGHT-CLICK and INSPECT each element
+3. Create selector map with verification status
+4. Test each selector works
+5. Generate Playwright test cases with verified selectors
+6. Generate comprehensive test plan
+
+Application: [APP_NAME]
+Focus Areas: [FEATURE_1, FEATURE_2, FEATURE_3]
+```
+
+### Simple Single Feature
+```
+Explore just the "[FEATURE_NAME]" on "[URL]":
+1. Document all elements, get selectors via INSPECT
+2. Create selector map for this feature
+3. Generate test cases for this feature only
+4. Create focused test plan
+```
+
+**For more templates:** See `TEMPLATE.md` in this skill folder
 
 ---
 
