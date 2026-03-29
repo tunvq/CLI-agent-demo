@@ -23,11 +23,16 @@ jobs:
         node-version: '18'
         cache: 'npm'
     
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y libnss3 libx11-xcb1 libxcb-dri3-0 libxss1 libatk-bridge2.0-0 libgtk-3-0
+    
     - name: Install dependencies
       run: npm install
     
     - name: Install Playwright Browsers
-      run: npx playwright install chromium
+      run: npx playwright install chromium --with-deps
+    
+    - name: Run TodoMVC Tests
       run: npx playwright test TodoMVC_Playwright_Automation.spec.js --reporter=html,json
     
     - name: Archive TodoMVC test results
@@ -53,11 +58,14 @@ jobs:
         node-version: '18'
         cache: 'npm'
     
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y libnss3 libx11-xcb1 libxcb-dri3-0 libxss1 libatk-bridge2.0-0 libgtk-3-0
+    
     - name: Install dependencies
       run: npm install
     
     - name: Install Playwright Browsers
-      run: npx playwright install chromium
+      run: npx playwright install chromium --with-deps
     
     - name: Run Heroku Tests
       run: npx playwright test herokuapp/Heroku_Playwright_Automation.js --reporter=html,json
